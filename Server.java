@@ -24,21 +24,16 @@ public class Server{
             for (byte b:bs) {
                 char c = (char)b;
                 command+=c;
-                //System.out.print(c);
             }
-            //System.out.println("");
             //open file
             String[] cwords=command.split(" ");
-//            System.out.println("cwords");
-//            for (int i = 0; i < cwords.length; i++) {
-//                System.out.println(cwords[i]);
-//            }
             String filepath=cwords[1];
             File file = new File("/Users/cosentus/Desktop/"+filepath);
             
             String statusCode="";
             if(file.exists()){
-                statusCode="200 OK\n";
+                statusCode="200 OK";
+                op.writeUTF(statusCode);
                 byte[] bytesArray = new byte[(int) file.length()+statusCode.length()];
                 byte[] fileBytes=new byte[(int) file.length()];
                 int i;
@@ -47,20 +42,11 @@ public class Server{
                 }
                 FileInputStream fileInputStream = new FileInputStream(file);
                 fileInputStream.read(fileBytes);
-                //int c=0;
-                for (int j = 0; j < fileBytes.length; j++) {
-                    bytesArray[j+i]=fileBytes[j];
-                }
-                op.write(bytesArray);
+                op.write(fileBytes);
             }
             else{
                 statusCode="404 Not found";
-                byte[] bytesArray = new byte[statusCode.length()];
-                int i;
-                for (i = 0; i < statusCode.length(); i++) {
-                    bytesArray[i]=(byte)statusCode.charAt(i);
-                }
-                op.write(bytesArray);
+                op.writeUTF(statusCode);
             }
             
             //reading bye

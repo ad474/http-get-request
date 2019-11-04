@@ -29,45 +29,39 @@ public class Client {
                 sb[i]=(byte)s.charAt(i);
             }
             op.write(sb);
-            //receiving file and opening it
-            int count=ip.available();
-            if(count==0){
-                while(count==0){
-                    count=ip.available();
-                }
-            }
-            byte[] bs = new byte[count];
-            ip.read(bs);
-            for (byte b:bs) {
-                char c = (char)b;
-                System.out.print(c);
-            }
-            System.out.println("");
-            //rendering webpage
-            String FILEPATH = ""; 
-            File file = new File("xyz.html"); 
-            Files.write(file.toPath(), bs);
-            Desktop.getDesktop().browse(file.toURI());
             
-//            try { 
-//  
-//                // Initialize a pointer 
-//                // in file using OutputStream 
-//                OutputStream os= new FileOutputStream(file); 
-//
-//                // Starts writing the bytes in it 
-//                os.write(bs); 
-//
-//                // Close the file 
-//                os.close(); 
-//            } 
-//
-//            catch (Exception e) { 
-//                System.out.println("Exception: " + e); 
-//            } 
-//            Desktop desktop= Desktop.getDesktop();
-//            desktop.open(file);
-//            
+            //modified
+            String statusCode=ip.readUTF();
+            if(statusCode.equals("200 OK")){
+                System.out.println(statusCode+"\n");
+                int count=ip.available();
+                if(count==0){
+                    while(count==0){
+                        count=ip.available();
+                    }
+                }
+                byte[] bs = new byte[count];
+                ip.read(bs);
+                for (byte b:bs) {
+                    char c = (char)b;
+                    System.out.print(c);
+                }
+                System.out.println("");
+                String FILEPATH = ""; 
+                File file = new File("xyz.html"); 
+                Files.write(file.toPath(), bs);
+                Desktop.getDesktop().browse(file.toURI());
+            }
+            else if (statusCode.equals("404 Not found")){
+                System.out.println(statusCode+"\n");
+            }
+            else{
+                System.out.println("error");
+            }
+            
+            //receiving file and opening it
+            
+            //rendering webpage
             
             String bye;
             bye=input.nextLine();
